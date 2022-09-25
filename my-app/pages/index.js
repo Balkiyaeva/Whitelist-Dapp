@@ -35,11 +35,11 @@ export default function Home() {
     const provider = await web3ModalRef.current.connect();
     const web3Provider = new providers.Web3Provider(provider);
 
-    // If user is not connected to the Rinkeby network, let them know and throw an error
+    // If user is not connected to the Goerli network, let them know and throw an error
     const { chainId } = await web3Provider.getNetwork();
-    if (chainId !== 4) {
-      window.alert("Change the network to Rinkeby");
-      throw new Error("Change network to Rinkeby");
+    if (chainId !== 5) {
+      window.alert("Change the network to Goerli");
+      throw new Error("Change network to Goerli");
     }
 
     if (needSigner) {
@@ -59,9 +59,9 @@ export default function Home() {
       // Create a new instance of the Contract with a Signer, which allows
       // update methods
       const whitelistContract = new Contract(
-        WHITELIST_CONTRACT_ADDRESS,
-        abi,
-        signer
+          WHITELIST_CONTRACT_ADDRESS,
+          abi,
+          signer
       );
       // call the addAddressToWhitelist from the contract
       const tx = await whitelistContract.addAddressToWhitelist();
@@ -88,12 +88,13 @@ export default function Home() {
       // We connect to the Contract using a Provider, so we will only
       // have read-only access to the Contract
       const whitelistContract = new Contract(
-        WHITELIST_CONTRACT_ADDRESS,
-        abi,
-        provider
+          WHITELIST_CONTRACT_ADDRESS,
+          abi,
+          provider
       );
       // call the numAddressesWhitelisted from the contract
-      const _numberOfWhitelisted = await whitelistContract.numAddressesWhitelisted();
+      const _numberOfWhitelisted =
+          await whitelistContract.numAddressesWhitelisted();
       setNumberOfWhitelisted(_numberOfWhitelisted);
     } catch (err) {
       console.error(err);
@@ -110,15 +111,15 @@ export default function Home() {
       // We can use it in it's place
       const signer = await getProviderOrSigner(true);
       const whitelistContract = new Contract(
-        WHITELIST_CONTRACT_ADDRESS,
-        abi,
-        signer
+          WHITELIST_CONTRACT_ADDRESS,
+          abi,
+          signer
       );
       // Get the address associated to the signer which is connected to  MetaMask
       const address = await signer.getAddress();
       // call the whitelistedAddresses from the contract
       const _joinedWhitelist = await whitelistContract.whitelistedAddresses(
-        address
+          address
       );
       setJoinedWhitelist(_joinedWhitelist);
     } catch (err) {
@@ -150,24 +151,24 @@ export default function Home() {
     if (walletConnected) {
       if (joinedWhitelist) {
         return (
-          <div className={styles.description}>
-            Thanks for joining the Whitelist!
-          </div>
+            <div className={styles.description}>
+              Thanks for joining the Whitelist!
+            </div>
         );
       } else if (loading) {
         return <button className={styles.button}>Loading...</button>;
       } else {
         return (
-          <button onClick={addAddressToWhitelist} className={styles.button}>
-            Join the Whitelist
-          </button>
+            <button onClick={addAddressToWhitelist} className={styles.button}>
+              Join the Whitelist
+            </button>
         );
       }
     } else {
       return (
-        <button onClick={connectWallet} className={styles.button}>
-          Connect your wallet
-        </button>
+          <button onClick={connectWallet} className={styles.button}>
+            Connect your wallet
+          </button>
       );
     }
   };
@@ -181,7 +182,7 @@ export default function Home() {
       // Assign the Web3Modal class to the reference object by setting it's `current` value
       // The `current` value is persisted throughout as long as this page is open
       web3ModalRef.current = new Web3Modal({
-        network: "rinkeby",
+        network: "goerli",
         providerOptions: {},
         disableInjectedProvider: false,
       });
@@ -190,31 +191,31 @@ export default function Home() {
   }, [walletConnected]);
 
   return (
-    <div>
-      <Head>
-        <title>Whitelist Dapp</title>
-        <meta name="description" content="Whitelist-Dapp" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div className={styles.main}>
-        <div>
-          <h1 className={styles.title}>Welcome to Crypto Devs!</h1>
-          <div className={styles.description}>
-            Its an NFT collection for developers in Crypto.
+      <div>
+        <Head>
+          <title>Whitelist Dapp</title>
+          <meta name="description" content="Whitelist-Dapp" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <div className={styles.main}>
+          <div>
+            <h1 className={styles.title}>Welcome to Crypto Devs!</h1>
+            <div className={styles.description}>
+              Its an NFT collection for developers in Crypto.
+            </div>
+            <div className={styles.description}>
+              {numberOfWhitelisted} have already joined the Whitelist
+            </div>
+            {renderButton()}
           </div>
-          <div className={styles.description}>
-            {numberOfWhitelisted} have already joined the Whitelist
+          <div>
+            <img className={styles.image} src="./crypto-devs.svg" />
           </div>
-          {renderButton()}
         </div>
-        <div>
-          <img className={styles.image} src="./crypto-devs.svg" />
-        </div>
-      </div>
 
-      <footer className={styles.footer}>
-        Made with &#10084; by Crypto Devs
-      </footer>
-    </div>
+        <footer className={styles.footer}>
+          Made with &#10084; by Crypto Devs
+        </footer>
+      </div>
   );
 }
